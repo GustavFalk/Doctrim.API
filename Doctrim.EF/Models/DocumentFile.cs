@@ -21,16 +21,14 @@ namespace Doctrim.EF.Models
         public string DocumentPath { get; set; }
         [Required(ErrorMessage = "Date is required")]
         public DateTime UploadDate { get; set; }
-
+        public List<MetadataTag> Tags { get; set; }
         public string DocumentName { get; set; }
         public Guid LegalEntity { get; set; }
-
         
         public Guid TypeGuid { get; set; } 
         [Required(ErrorMessage = "Type is required")]
         public DocumentType Type { get; set; }
+
         
-        public byte[] FileByteArray { get; set; }
-        public List<MetadataTag> Tags { get; set; }
     }
 }

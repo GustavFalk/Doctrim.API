@@ -15,6 +15,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Doctrim.DTOs;
 
 namespace Doctrim.API
 {
@@ -34,7 +36,7 @@ namespace Doctrim.API
             {
                 options.UseSqlServer(Configuration.GetConnectionString("Default"));
             });
-
+            services.AddAutoMapper(typeof(MappingProfile));
             services.AddControllers()
                   .AddNewtonsoftJson(
           options => {

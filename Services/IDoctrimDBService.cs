@@ -26,7 +26,7 @@ namespace Services
         #region Documents
         public Task<List<DocumentFile>> GetAllDocuments();
         public Task<DocumentFile> GetDocument(int id);
-        public Task<List<DocumentFile>> GetDocumentsFromType(DocumentType type);
+        public Task<List<DocumentFile>> GetDocumentsFromType(Guid type);
 
         #region DocumentTypes
         public Task<List<DocumentType>> GetAllDocumentTypes();

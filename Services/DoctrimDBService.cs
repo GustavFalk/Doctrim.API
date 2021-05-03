@@ -31,16 +31,12 @@ namespace Services
         /// <returns></returns>
         public async Task<bool> CreateDocument(DocumentFile file)
         {
-            file = await _apiService.DocumentUpload(file);
+            
             if (file.DocumentPath != null)
             {
-               
-                file.UniqueId = Guid.NewGuid();               
-               
-                    await _context.Documents.AddAsync(file);                
-                    _context.SaveChanges();
-                    return true;            
-
+                await _context.Documents.AddAsync(file);
+                await _context.SaveChangesAsync();
+                return true;
             }
             else
             {
@@ -101,14 +97,14 @@ namespace Services
         }
 
         /// <summary>
-        /// Returns a list of document that has one specific type.
+        /// Returns a list of document that has one specific types identifyer.
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public async Task<List<DocumentFile>> GetDocumentsFromType(DocumentType type)
+        public async Task<List<DocumentFile>> GetDocumentsFromType(Guid type)
         {
             return await _context.Documents
-                .Where(x => x.Type == type)
+                .Where(x => x.TypeGuid == type)
                 .ToListAsync();
         }
 

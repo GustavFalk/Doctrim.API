@@ -4,14 +4,16 @@ using Doctrim.EF.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Doctrim.EF.Migrations
 {
     [DbContext(typeof(DoctrimContext))]
-    partial class DoctrimContextModelSnapshot : ModelSnapshot
+    [Migration("20210426141951_AddedIformfileToModel")]
+    partial class AddedIformfileToModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,6 +34,9 @@ namespace Doctrim.EF.Migrations
                     b.Property<string>("DocumentPath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("FileByteArray")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<Guid>("LegalEntity")
                         .HasColumnType("uniqueidentifier");

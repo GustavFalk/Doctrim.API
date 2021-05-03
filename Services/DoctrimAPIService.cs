@@ -1,4 +1,5 @@
-﻿using Doctrim.EF.Models;
+﻿using Doctrim.DTOs;
+using Doctrim.EF.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,39 +22,22 @@ namespace Services
         }
 
         /// <summary>
-        /// Uploads the document to the "UploadedDocuments" folder and returns the filepath to the document.  
+        /// Converts a Bytearray into document and adds it to the "UploadedDocuments" folder and returns the DocumentFileDTO with the filepath.  
         /// it adds a DateTime to the string to make it unique in the database
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        public async Task<DocumentFile> DocumentUpload(DocumentFile file)
+        public async Task<DocumentFileDTO> DocumentUpload(DocumentPostDTO fileDTO)
         {
-
-
-            file.DocumentName = file.DocumentName + DateTime.Now.ToString("yyMMddhhmmssffff");
-            var path = $"{_env.ContentRootPath}\\UploadedDocuments\\{file.DocumentName}";
+            fileDTO.DocumentFile.DocumentName = fileDTO.DocumentFile.DocumentName + DateTime.Now.ToString("yyMMddhhmmssffff") + ".pdf";
+            var path = $"{_env.ContentRootPath}\\UploadedDocuments\\{fileDTO.DocumentFile.DocumentName}";
             var fileStream = System.IO.File.Create(path);
-            fileStream.Write(file.FileByteArray, 0, file.FileByteArray.Length);
+            fileStream.Write(fileDTO.FileByteArray, 0, fileDTO.FileByteArray.Length);
             fileStream.Close();
 
-            file.DocumentPath = "~/UploadedDocuments/" + file.DocumentName;
+            fileDTO.DocumentFile.DocumentPath = path;
 
-            return file;
-            //string serverPath = _env.ContentRootPath;
-            //string fileName = Path.GetFileNameWithoutExtension(file.FileName);
-            //fileName = fileName + DateTime.Now.ToString("yyMMddhhmmssffff") + fileExtension;
-
-            //string path = Path.Combine(serverPath + "/UploadedDocuments", fileName);
-            //using(var fileStream = new FileStream(path, FileMode.Create))
-            //{
-            //    await file.CopyToAsync(fileStream);
-            //}
-            //int skippableURL = serverPath.Length;
-            //string newURL = path.Substring(skippableURL);
-            //return "~" + newURL;
-
-
-
+            return fileDTO.DocumentFile;
         }
 
      

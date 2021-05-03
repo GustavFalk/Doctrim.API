@@ -1,6 +1,9 @@
-﻿using Doctrim.EF.Data;
+﻿using AutoMapper;
+using Doctrim.DTOs;
+using Doctrim.EF.Data;
 using Doctrim.EF.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using Services;
 using System;
 using System.Collections.Generic;
@@ -19,24 +22,33 @@ namespace Doctrim.API.Controllers
     [ApiController]
     public class DocumentsController : ControllerBase
     {
-        private IDoctrimDBService _service;
+        private IDoctrimDBService _dbService;
+        private IDoctrimAPIService _apiService;
+        private IMapper _mapper;
 
-        public DocumentsController(IDoctrimDBService service)
+
+        public DocumentsController(IDoctrimDBService dbService, 
+            IDoctrimAPIService apiService, 
+            IMapper mapper)
         {
-            _service = service;
+            _dbService = dbService;
+            _apiService = apiService;
+            _mapper = mapper;            
+            
         }
 
         // GET: localhost:XXXXX/api/documents
         // Makes a call to the api and get all documents in the database as answer
         [HttpGet]
-        public async Task<ActionResult<List<DocumentFile>>> GetAllDocuments()
+        public async Task<ActionResult<List<DocumentFileDTO>>> GetAllDocuments()
         {
             try
             {
-                var x = await _service.GetAllDocuments();
-                if (x != null)
+                var documentFiles = await _dbService.GetAllDocuments();
+               List<DocumentFileDTO> documentFilesDTO = _mapper.Map<List<DocumentFileDTO>>(documentFiles);
+                if (documentFilesDTO != null)
                 {
-                    return Ok(x);
+                    return Ok(documentFilesDTO);
                 }
                 else
                 {
@@ -51,17 +63,25 @@ namespace Doctrim.API.Controllers
 
         // GET: localhost:XXXXX/api/documents/X
         // Makes a call to the api with an id of selected document, API returns the selected document as download.
-        [HttpGet("{id}")]
+
+        [HttpGet("Download/{id:int}")]
         public async Task<IActionResult> GetDocument(int id)
         {
             try
             {
-                DocumentFile documentFile = await _service.GetDocument(id);
+                DocumentFile documentFile = await _dbService.GetDocument(id);
                 if (documentFile != null)
                 {
-                    byte[] fileBytes = System.IO.File.ReadAllBytes(documentFile.DocumentPath);
+
+                    var provider = new FileExtensionContentTypeProvider();
+                    if (!provider.TryGetContentType(documentFile.DocumentPath, out var contentType))
+                    {
+                        contentType = "application/octet-stream";
+                    }
+
+                    var fileBytes = System.IO.File.ReadAllBytes(documentFile.DocumentPath);
                     string filename = documentFile.DocumentPath;
-                    return Ok(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, filename));
+                    return File(fileBytes, contentType, Path.GetFileName(filename));
                 }
                 else return StatusCode(404);
             }
@@ -72,16 +92,49 @@ namespace Doctrim.API.Controllers
 
         }
 
-        // Post: localhost:XXXXX/api/documents/documentFile
-        // Makes a post to the API containing the the document file and its metadata
-        [HttpPost]
-        public async Task<IActionResult> UploadDocument([FromBody]DocumentFile documentFile)
+        [HttpGet("ByType/{type:Guid}")]
+        public async Task<ActionResult<List<DocumentFileDTO>>> GetAllDocumentsByType(Guid type)
         {
             try
             {
-                if (await _service.CreateDocument(documentFile))
+                
+                var documentFiles = await _dbService.GetDocumentsFromType(type);
+                List<DocumentFileDTO> documentFilesDTO = _mapper.Map<List<DocumentFileDTO>>(documentFiles);
+                if (documentFilesDTO != null)
                 {
-                    return Ok();
+                    return Ok(documentFilesDTO);
+                }
+                else
+                {
+                    return StatusCode(404);
+                }
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
+        }
+
+
+        // Post: localhost:XXXXX/api/documents
+        // Makes a post to the API containing the the document file and its metadata
+        [HttpPost]
+        public async Task<IActionResult> UploadDocument([FromBody] DocumentPostDTO postDTO)
+        {
+            try
+            {
+                postDTO.DocumentFile = await _apiService.DocumentUpload(postDTO);
+                DocumentFile documentFile = _mapper.Map<DocumentFile>(postDTO.DocumentFile);
+                if (documentFile.DocumentPath != null)
+                {
+                    if (await _dbService.CreateDocument(documentFile))
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return StatusCode(400, "Can't create document, check if all required parameters are filled in");
+                    }
                 }
                 else
                 {
@@ -92,20 +145,15 @@ namespace Doctrim.API.Controllers
             {
                 return StatusCode(500);
             }
-           
+
 
         }
 
-        // GET: localhost:XXXXX/api/documents/X
-        // Makes a call to the api with an id of selected document, API returns the selected document as download.
-
-
-      
-           
+    }           
 
            
 
 
 
     }
-}
+

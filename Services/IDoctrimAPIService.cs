@@ -1,4 +1,5 @@
-﻿using Doctrim.EF.Models;
+﻿using Doctrim.DTOs;
+using Doctrim.EF.Models;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,6 @@ namespace Services
 {
     public interface IDoctrimAPIService
     {
-        public Task<DocumentFile> DocumentUpload(DocumentFile file);
+        public Task<DocumentFileDTO> DocumentUpload(DocumentPostDTO fileDTO);
     }
 }
