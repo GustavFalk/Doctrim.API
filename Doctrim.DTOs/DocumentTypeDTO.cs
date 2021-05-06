@@ -9,7 +9,7 @@ namespace Doctrim.DTOs
 {
     public class DocumentTypeDTO
     {
-        public int Id { get; set; }
+       
 
         public Guid UniqueId { get; set; }
         [Required]

@@ -27,15 +27,16 @@ namespace Doctrim.API.Controllers
         private IMapper _mapper;
 
 
-        public DocumentsController(IDoctrimDBService dbService, 
-            IDoctrimAPIService apiService, 
+        public DocumentsController(IDoctrimDBService dbService,
+            IDoctrimAPIService apiService,
             IMapper mapper)
         {
             _dbService = dbService;
             _apiService = apiService;
-            _mapper = mapper;            
-            
+            _mapper = mapper;
+
         }
+        #region GET
 
         // GET: localhost:XXXXX/api/documents
         // Makes a call to the api and get all documents in the database as answer
@@ -45,7 +46,7 @@ namespace Doctrim.API.Controllers
             try
             {
                 var documentFiles = await _dbService.GetAllDocuments();
-               List<DocumentFileDTO> documentFilesDTO = _mapper.Map<List<DocumentFileDTO>>(documentFiles);
+                List<DocumentFileDTO> documentFilesDTO = _mapper.Map<List<DocumentFileDTO>>(documentFiles);
                 if (documentFilesDTO != null)
                 {
                     return Ok(documentFilesDTO);
@@ -61,15 +62,15 @@ namespace Doctrim.API.Controllers
             }
         }
 
-        // GET: localhost:XXXXX/api/documents/X
+        // GET: localhost:XXXXX/api/documents/download/id
         // Makes a call to the api with an id of selected document, API returns the selected document as download.
 
-        [HttpGet("Download/{id:int}")]
-        public async Task<IActionResult> GetDocument(int id)
+        [HttpGet("Download/{UniqueId:Guid}")]
+        public async Task<IActionResult> GetDocument(Guid UniqueId)
         {
             try
             {
-                DocumentFile documentFile = await _dbService.GetDocument(id);
+                DocumentFile documentFile = await _dbService.GetDocument(UniqueId);
                 if (documentFile != null)
                 {
 
@@ -92,12 +93,14 @@ namespace Doctrim.API.Controllers
 
         }
 
+        // GET: localhost:XXXXX/api/documents/bytype/type
+        // Returns a list of documents that is of a specific type.
         [HttpGet("ByType/{type:Guid}")]
         public async Task<ActionResult<List<DocumentFileDTO>>> GetAllDocumentsByType(Guid type)
         {
             try
             {
-                
+
                 var documentFiles = await _dbService.GetDocumentsFromType(type);
                 List<DocumentFileDTO> documentFilesDTO = _mapper.Map<List<DocumentFileDTO>>(documentFiles);
                 if (documentFilesDTO != null)
@@ -115,7 +118,83 @@ namespace Doctrim.API.Controllers
             }
         }
 
+        // GET: localhost:XXXXX/api/documents/betweendates/date&&date
+        // Returns a list of documents that is of a specific type.
+        [HttpGet("BetweenDates/{first:DateTime}&&{last:DateTime}")]
+        public async Task<ActionResult<List<DocumentFileDTO>>> GetDocumentsBetweenDates(DateTime first, DateTime last)
+        {
+            try
+            {
 
+                var documentFiles = await _dbService.GetDocumentsBetweenDates(first, last);
+                List<DocumentFileDTO> documentFilesDTO = _mapper.Map<List<DocumentFileDTO>>(documentFiles);
+                if (documentFilesDTO != null)
+                {
+                    return Ok(documentFilesDTO);
+                }
+                else
+                {
+                    return StatusCode(404);
+                }
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
+        }
+
+        // GET: localhost:XXXXX/api/documents/fromtag/tag
+        // Returns a list of documents that is of a specific type.
+        [HttpGet("FromTag/{tag}")]
+        public async Task<ActionResult<List<DocumentFileDTO>>> GetDocumentsFromTag(string tag)
+        {
+            try
+            {                
+                
+                var documentFiles = await _dbService.GetDocumentsFromTag(tag);
+                List<DocumentFileDTO> documentFilesDTO = _mapper.Map<List<DocumentFileDTO>>(documentFiles);
+                if (documentFilesDTO != null)
+                {
+                    return Ok(documentFilesDTO);
+                }
+                else
+                {
+                    return StatusCode(404);
+                }
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet("Search")]
+        public async Task<ActionResult<List<DocumentFileDTO>>> GetDocumentsFromTag([FromQuery]SearchDTO searchParameters)
+        {
+            try
+            {
+
+                var documentFiles = await _dbService.DocumentSearch(searchParameters);
+                List<DocumentFileDTO> documentFilesDTO = _mapper.Map<List<DocumentFileDTO>>(documentFiles);
+                if (documentFilesDTO != null)
+                {
+                    return Ok(documentFilesDTO);
+                }
+                else
+                {
+                    return StatusCode(404);
+                }
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
+        }
+
+
+        #endregion
+
+        #region POST
         // Post: localhost:XXXXX/api/documents
         // Makes a post to the API containing the the document file and its metadata
         [HttpPost]
@@ -149,11 +228,13 @@ namespace Doctrim.API.Controllers
 
         }
 
-    }           
-
-           
-
-
-
+        #endregion
     }
+
+
+
+
+
+
+}
 

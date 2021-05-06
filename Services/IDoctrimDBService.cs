@@ -1,4 +1,5 @@
-﻿using Doctrim.EF.Models;
+﻿using Doctrim.DTOs;
+using Doctrim.EF.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,11 +26,17 @@ namespace Services
 
         #region Documents
         public Task<List<DocumentFile>> GetAllDocuments();
-        public Task<DocumentFile> GetDocument(int id);
+        public Task<DocumentFile> GetDocument(Guid UniqueId);
         public Task<List<DocumentFile>> GetDocumentsFromType(Guid type);
 
         #region DocumentTypes
         public Task<List<DocumentType>> GetAllDocumentTypes();
+
+        public Task<List<DocumentFile>> GetDocumentsBetweenDates(DateTime first, DateTime last);
+
+        public Task<List<DocumentFile>> GetDocumentsFromTag(string search);
+        public Task<List<DocumentFile>> DocumentSearch(SearchDTO search);
+
         #endregion
         #endregion
 

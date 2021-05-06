@@ -9,7 +9,7 @@ namespace Doctrim.DTOs
 {
     public class DocumentFileDTO
     {
-        public int Id { get; set; }
+        
 
         public Guid UniqueId { get; set; }
 
@@ -22,6 +22,7 @@ namespace Doctrim.DTOs
         public Guid LegalEntity { get; set; }
         [Required]
         public Guid TypeGuid { get; set; }
+        public string FileExtension { get; set; }
         public DocumentTypeDTO Type { get; set; }
 
         public List<MetadataTagDTO> Tags { get; set; }

@@ -29,8 +29,8 @@ namespace Services
         /// <returns></returns>
         public async Task<DocumentFileDTO> DocumentUpload(DocumentPostDTO fileDTO)
         {
-            fileDTO.DocumentFile.DocumentName = fileDTO.DocumentFile.DocumentName + DateTime.Now.ToString("yyMMddhhmmssffff") + ".pdf";
-            var path = $"{_env.ContentRootPath}\\UploadedDocuments\\{fileDTO.DocumentFile.DocumentName}";
+            fileDTO.DocumentFile.DocumentName = fileDTO.DocumentFile.DocumentName;
+            var path = $"{_env.ContentRootPath}\\UploadedDocuments\\{fileDTO.DocumentFile.DocumentName}{DateTime.Now.ToString("yyMMddhhmmssffff")}{fileDTO.DocumentFile.FileExtension}";
             var fileStream = System.IO.File.Create(path);
             fileStream.Write(fileDTO.FileByteArray, 0, fileDTO.FileByteArray.Length);
             fileStream.Close();

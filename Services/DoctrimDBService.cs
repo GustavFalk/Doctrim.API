@@ -1,6 +1,8 @@
-﻿using Doctrim.EF.Data;
+﻿using Doctrim.DTOs;
+using Doctrim.EF.Data;
 using Doctrim.EF.Models;
 using Microsoft.EntityFrameworkCore;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -86,12 +88,12 @@ namespace Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<DocumentFile> GetDocument(int id)
+        public async Task<DocumentFile> GetDocument(Guid UniqueId)
         {
             return await _context.Documents
                 .Include(x => x.Tags)
                 .Include(x => x.Type)
-                .Where(x => x.Id == id)
+                .Where(x => x.UniqueId == UniqueId)
                 .FirstOrDefaultAsync();
 
         }
@@ -108,7 +110,55 @@ namespace Services
                 .ToListAsync();
         }
 
-      
+        /// <summary>
+        /// Returns a list of document that har an uploaddate between two dates.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+
+        public async Task<List<DocumentFile>> GetDocumentsBetweenDates(DateTime first, DateTime last)
+        {
+            return await _context.Documents
+                .Where(x => x.UploadDate >= first && x.UploadDate <= last)
+                .ToListAsync();
+        }
+
+        public async Task<List<DocumentFile>> GetDocumentsFromTag(string search)
+        {
+            return await _context.Documents
+                .Include(x => x.Tags)
+                .Where(x => x.Tags.Any(y => y.Tag.Contains(search)))                
+                .ToListAsync();         
+
+
+        }
+
+        public async Task<List<DocumentFile>> DocumentSearch(SearchDTO search)
+        {
+            var files = from x in _context.Documents
+                        select x;                
+
+            //sorts the list of files with search 
+            if (search.TypeGuid != Guid.Empty)
+                files = files.Where(x => x.TypeGuid == search.TypeGuid);
+
+            if (search.From != DateTime.MinValue && search.Until != DateTime.MinValue)
+                files = files.Where(x => x.UploadDate >= search.From && x.UploadDate <= search.Until);
+
+            if (search.TagName != null)
+                files = files.Where(x => x.Tags.Any(y => y.Tag.Contains(search.TagName)));
+
+            if (search.LegalEntityGuid != Guid.Empty)
+                files = files.Where(x => x.LegalEntity == search.LegalEntityGuid);
+
+            return await files
+                .Include(x => x.Tags)
+                .ToListAsync();
+
+        }
+
+
+
         #endregion
 
         #region DocumentTypes
@@ -119,9 +169,11 @@ namespace Services
         /// <returns></returns>
         public async Task<List<DocumentType>> GetAllDocumentTypes()
         {
-           return await _context.DocumentTypes
-                .ToListAsync();
+            return await _context.DocumentTypes
+                 .ToListAsync();
         }
+
+        
 
         #endregion
 
