@@ -19,6 +19,8 @@ namespace Doctrim.DTOs
             CreateMap<DocumentType, DocumentTypeDTO>();
             CreateMap<MetadataTagDTO, MetadataTag>();
             CreateMap<MetadataTag, MetadataTagDTO>();
+            CreateMap<DocumentTemplate, DocumentTemplateDTO>();
+            CreateMap<DocumentTemplateDTO, DocumentTemplate>();
         }
     }
 }

@@ -1,12 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Doctrim.EF.Models
 {
@@ -24,7 +19,8 @@ namespace Doctrim.EF.Models
         public List<MetadataTag> Tags { get; set; }
         public string DocumentName { get; set; }
         public Guid LegalEntity { get; set; }
-        
+        [NotMapped]
+        public string FileExtension { get; set; }
         public Guid TypeGuid { get; set; } 
         [Required(ErrorMessage = "Type is required")]
         public DocumentType Type { get; set; }

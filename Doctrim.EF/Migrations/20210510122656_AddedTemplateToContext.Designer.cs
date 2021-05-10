@@ -4,14 +4,16 @@ using Doctrim.EF.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Doctrim.EF.Migrations
 {
     [DbContext(typeof(DoctrimContext))]
-    partial class DoctrimContextModelSnapshot : ModelSnapshot
+    [Migration("20210510122656_AddedTemplateToContext")]
+    partial class AddedTemplateToContext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

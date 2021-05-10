@@ -17,6 +17,8 @@ namespace Doctrim.EF.Data
         
         public DbSet<MetadataTag> MetadataTags { get; set; }
 
+        public DbSet<DocumentTemplate> Templates { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DocumentFile>()

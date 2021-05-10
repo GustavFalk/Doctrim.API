@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="FilledTemplates\" />
     <Folder Include="UploadedDocuments\" />
   </ItemGroup>
 

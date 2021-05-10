@@ -15,8 +15,7 @@ namespace Doctrim.DTOs
 
         [Required]
         public DateTime UploadDate { get; set; }
-
-        public string DocumentPath { get; set; }
+        
         public string DocumentName { get; set; }
         [Required]
         public Guid LegalEntity { get; set; }

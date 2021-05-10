@@ -202,8 +202,9 @@ namespace Doctrim.API.Controllers
         {
             try
             {
-                postDTO.DocumentFile = await _apiService.DocumentUpload(postDTO);
                 DocumentFile documentFile = _mapper.Map<DocumentFile>(postDTO.DocumentFile);
+                documentFile = await _apiService.DocumentUpload(documentFile, postDTO.FileByteArray);
+
                 if (documentFile.DocumentPath != null)
                 {
                     if (await _dbService.CreateDocument(documentFile))

@@ -63,7 +63,27 @@ namespace Services
                 await _context.SaveChangesAsync();
            
         }
-            
+
+        #endregion
+
+        #region DocumentTemplates
+
+        public async Task<bool> CreateTemplate(DocumentTemplate template)
+        {
+
+            if (template.FilePath != null)
+            {
+                await _context.Templates.AddAsync(template);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+
         #endregion
 
         #endregion
@@ -173,8 +193,26 @@ namespace Services
                  .ToListAsync();
         }
 
-        
 
+
+        #endregion
+
+        #region DocumentTemplates
+        public async Task<DocumentTemplate> GetTemplate(Guid selectedTemplate)
+        {
+            return await _context.Templates                
+                .Where(x => x.UniqueId == selectedTemplate)
+                .FirstOrDefaultAsync();
+
+        } 
+        public async Task<List<DocumentTemplate>> GetTemplates()
+        {
+            return await _context.Templates
+               .ToListAsync();
+
+        }
+
+        
         #endregion
 
         #endregion

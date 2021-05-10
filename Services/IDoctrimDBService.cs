@@ -20,6 +20,10 @@ namespace Services
         public void CreateDocumentType(DocumentType type);
         #endregion
 
+        #region DocumentTemplates
+        public Task<bool> CreateTemplate(DocumentTemplate template);
+        #endregion
+
         #endregion
 
         #region Read
@@ -40,6 +44,10 @@ namespace Services
         #endregion
         #endregion
 
+        #region DocumentTemplates
+        public Task<List<DocumentTemplate>> GetTemplates();
+        public Task<DocumentTemplate> GetTemplate(Guid selectedTemplate);
+        #endregion
         #endregion
 
         #region Update

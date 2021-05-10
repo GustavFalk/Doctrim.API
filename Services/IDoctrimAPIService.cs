@@ -11,6 +11,10 @@ namespace Services
 {
     public interface IDoctrimAPIService
     {
-        public Task<DocumentFileDTO> DocumentUpload(DocumentPostDTO fileDTO);
+        public Task<DocumentFile> DocumentUpload(DocumentFile documentFile, byte[] fileByteArray);
+
+        public Task<string> FillTemplate(DocumentTemplate selectedTemplate);
+
+        public Task<DocumentTemplate> UploadTemplate(DocumentTemplate template, byte[] fileByteArray);
     }
 }
