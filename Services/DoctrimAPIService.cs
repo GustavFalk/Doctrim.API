@@ -90,7 +90,7 @@ namespace Services
             }
         }
 
-        public async Task<DocumentTemplate> UploadTemplate(DocumentTemplate template, byte[] fileByteArray)
+      public async Task<DocumentTemplate> UploadTemplate(DocumentTemplate template, byte[] fileByteArray)
         {
             var path = $"{_env.ContentRootPath}\\DocumentTemplates\\{template.TemplateName}{DateTime.Now.ToString("yyMMddhhmmssffff")}.docx";
             var fileStream = System.IO.File.Create(path);
