@@ -34,7 +34,7 @@ namespace Doctrim.API.Controllers
             _dbService = dbService;
             _apiService = apiService;
             _mapper = mapper;
-
+            
         }
         #region GET
 

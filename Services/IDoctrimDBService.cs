@@ -17,7 +17,7 @@ namespace Services
         #endregion
 
         #region DocumentTypes
-        public void CreateDocumentType(DocumentType type);
+        public Task CreateDocumentType(DocumentType type);
         #endregion
 
         #region DocumentTemplates

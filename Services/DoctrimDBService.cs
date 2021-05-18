@@ -55,7 +55,7 @@ namespace Services
         /// Adds a new DocumentType in the dababase from a DocumentType object.
         /// </summary>
         /// <param name="type"></param>
-        public async void CreateDocumentType(DocumentType type)
+        public async Task CreateDocumentType(DocumentType type)
         {
             
                 type.UniqueId = Guid.NewGuid();

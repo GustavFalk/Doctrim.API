@@ -21,24 +21,36 @@ namespace Doctrim.API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<DocumentType>>> GetTypes()
         {
-            
-                try
+
+            try
+            {
+                var x = await _service.GetAllDocumentTypes();
+                if (x != null)
                 {
-                    var x = await _service.GetAllDocumentTypes();
-                    if (x != null)
-                    {
-                        return Ok(x);
-                    }
-                    else
-                    {
-                        return StatusCode(404);
-                    }
+                    return Ok(x);
                 }
-                catch
+
+                //creates two agreements when starting up for the first time.
+                if (x == null)
                 {
-                    return StatusCode(500);
+                    DocumentType type1 = new DocumentType() { Type = "Terminal leasing" };
+                    await _service.CreateDocumentType(type1);
+                    DocumentType type2 = new DocumentType() { Type = "Acquiring Agreement" };
+                    await _service.CreateDocumentType(type1);
+                    var y = await _service.GetAllDocumentTypes();
+                    return Ok(y);
+
                 }
-            
+                else
+                {
+                    return StatusCode(404);
+                }
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
+
         }
         
     }
