@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Doctrim.DTOs
 {
-    public class SearchDTO
+    public class SearchQuery
     {
         public Guid TypeGuid { get; set; }
         public DateTime From { get; set; }

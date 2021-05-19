@@ -32,6 +32,7 @@ namespace Doctrim.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSwaggerGen();
             services.AddDbContext<DoctrimContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("Default"));
@@ -55,7 +56,8 @@ namespace Doctrim.API
             {
                 app.UseDeveloperExceptionPage();
               
-            }
+            }         
+
 
             app.UseHttpsRedirection();
 
@@ -66,6 +68,13 @@ namespace Doctrim.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.RoutePrefix = string.Empty;
             });
         }
     }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Doctrim.DTOs
 {
-    public class DocumentPostDTO
+    public class CreateTemplateCommand
     {
         public DocumentFileDTO DocumentFile { get; set; }
 

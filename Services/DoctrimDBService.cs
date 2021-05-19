@@ -118,42 +118,7 @@ namespace Services
 
         }
 
-        /// <summary>
-        /// Returns a list of document that has one specific types identifyer.
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public async Task<List<DocumentFile>> GetDocumentsFromType(Guid type)
-        {
-            return await _context.Documents
-                .Where(x => x.TypeGuid == type)
-                .ToListAsync();
-        }
-
-        /// <summary>
-        /// Returns a list of document that har an uploaddate between two dates.
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-
-        public async Task<List<DocumentFile>> GetDocumentsBetweenDates(DateTime first, DateTime last)
-        {
-            return await _context.Documents
-                .Where(x => x.UploadDate >= first && x.UploadDate <= last)
-                .ToListAsync();
-        }
-
-        public async Task<List<DocumentFile>> GetDocumentsFromTag(string search)
-        {
-            return await _context.Documents
-                .Include(x => x.Tags)
-                .Where(x => x.Tags.Any(y => y.Tag.Contains(search)))                
-                .ToListAsync();         
-
-
-        }
-
-        public async Task<List<DocumentFile>> DocumentSearch(SearchDTO search)
+        public async Task<List<DocumentFile>> DocumentSearch(SearchQuery search)
         {
             var files = from x in _context.Documents
                         select x;                

@@ -8,8 +8,7 @@ using System.Threading.Tasks;
 namespace Doctrim.DTOs
 {
     public class DocumentTypeDTO
-    {
-       
+    {     
 
         public Guid UniqueId { get; set; }
         [Required]

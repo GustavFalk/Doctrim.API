@@ -1,9 +1,7 @@
 ﻿using Doctrim.EF.Models;
 using Microsoft.AspNetCore.Mvc;
 using Services;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Doctrim.API.Controllers

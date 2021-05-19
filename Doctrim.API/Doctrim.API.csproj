@@ -2,13 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>b96134c1-707d-46b7-b7e7-69e3902766d5</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
-    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.7" />
-    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0-preview.1.21102.2">
       <PrivateAssets>all</PrivateAssets>
@@ -19,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Doctrim.DTOs\Doctrim.DTOs.csproj" />
+    <ProjectReference Include="..\Doctrim.DTOs\Doctrim.Dto.csproj" />
     <ProjectReference Include="..\Doctrim.EF\Doctrim.EF.csproj" />
     <ProjectReference Include="..\Services\Services.csproj" />
   </ItemGroup>

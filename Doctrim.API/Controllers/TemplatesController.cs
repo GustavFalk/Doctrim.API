@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
+
 using Doctrim.DTOs;
 using Doctrim.EF.Models;
 using Microsoft.AspNetCore.StaticFiles;
@@ -63,7 +63,7 @@ namespace Doctrim.API.Controllers
                 DocumentTemplate documentTemplate = await _dbService.GetTemplate(selectedTemplate);
                 if (documentTemplate != null)
                 {
-                    string filledTemplatePath = await _apiService.FillTemplate(documentTemplate);
+                    string filledTemplatePath = _apiService.FillTemplate(documentTemplate);
                     if (filledTemplatePath != null)
                     {
                         var provider = new FileExtensionContentTypeProvider();
@@ -73,7 +73,7 @@ namespace Doctrim.API.Controllers
                         }
 
                         var fileBytes = System.IO.File.ReadAllBytes(filledTemplatePath);
-                        string filename = documentTemplate.TemplateName + "Describing text.docx";
+                        string filename = documentTemplate.TemplateName + "Describing text.pdf";
                         return File(fileBytes, contentType, Path.GetFileName(filename));
                        
                     }
@@ -95,7 +95,7 @@ namespace Doctrim.API.Controllers
             try
             {
                 DocumentTemplate documentTemplate = _mapper.Map<DocumentTemplate>(postDTO.TemplateDTO);
-                documentTemplate = await _apiService.UploadTemplate(documentTemplate, postDTO.FileByteArray);
+                documentTemplate = _apiService.UploadTemplate(documentTemplate, postDTO.FileByteArray);
 
                 if (documentTemplate.FilePath != null)
                 {
@@ -113,7 +113,7 @@ namespace Doctrim.API.Controllers
                     return StatusCode(400, "Can't create document, check if all required parameters are filled in");
                 }
             }
-            catch(Exception ex)
+            catch
             {
                 return StatusCode(500);
             }

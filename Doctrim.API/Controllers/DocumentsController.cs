@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Doctrim.DTOs;
-using Doctrim.EF.Data;
 using Doctrim.EF.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
@@ -8,11 +7,6 @@ using Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Reflection.Metadata;
 using System.Threading.Tasks;
 
 
@@ -93,83 +87,8 @@ namespace Doctrim.API.Controllers
 
         }
 
-        // GET: localhost:XXXXX/api/documents/bytype/type
-        // Returns a list of documents that is of a specific type.
-        [HttpGet("ByType/{type:Guid}")]
-        public async Task<ActionResult<List<DocumentFileDTO>>> GetAllDocumentsByType(Guid type)
-        {
-            try
-            {
-
-                var documentFiles = await _dbService.GetDocumentsFromType(type);
-                List<DocumentFileDTO> documentFilesDTO = _mapper.Map<List<DocumentFileDTO>>(documentFiles);
-                if (documentFilesDTO != null)
-                {
-                    return Ok(documentFilesDTO);
-                }
-                else
-                {
-                    return StatusCode(404);
-                }
-            }
-            catch
-            {
-                return StatusCode(500);
-            }
-        }
-
-        // GET: localhost:XXXXX/api/documents/betweendates/date&&date
-        // Returns a list of documents that is of a specific type.
-        [HttpGet("BetweenDates/{first:DateTime}&&{last:DateTime}")]
-        public async Task<ActionResult<List<DocumentFileDTO>>> GetDocumentsBetweenDates(DateTime first, DateTime last)
-        {
-            try
-            {
-
-                var documentFiles = await _dbService.GetDocumentsBetweenDates(first, last);
-                List<DocumentFileDTO> documentFilesDTO = _mapper.Map<List<DocumentFileDTO>>(documentFiles);
-                if (documentFilesDTO != null)
-                {
-                    return Ok(documentFilesDTO);
-                }
-                else
-                {
-                    return StatusCode(404);
-                }
-            }
-            catch
-            {
-                return StatusCode(500);
-            }
-        }
-
-        // GET: localhost:XXXXX/api/documents/fromtag/tag
-        // Returns a list of documents that is of a specific type.
-        [HttpGet("FromTag/{tag}")]
-        public async Task<ActionResult<List<DocumentFileDTO>>> GetDocumentsFromTag(string tag)
-        {
-            try
-            {                
-                
-                var documentFiles = await _dbService.GetDocumentsFromTag(tag);
-                List<DocumentFileDTO> documentFilesDTO = _mapper.Map<List<DocumentFileDTO>>(documentFiles);
-                if (documentFilesDTO != null)
-                {
-                    return Ok(documentFilesDTO);
-                }
-                else
-                {
-                    return StatusCode(404);
-                }
-            }
-            catch
-            {
-                return StatusCode(500);
-            }
-        }
-
         [HttpGet("Search")]
-        public async Task<ActionResult<List<DocumentFileDTO>>> GetDocumentsFromTag([FromQuery]SearchDTO searchParameters)
+        public async Task<ActionResult<List<DocumentFileDTO>>> GetDocumentsFromSearch([FromQuery]SearchQuery searchParameters)
         {
             try
             {
@@ -198,12 +117,12 @@ namespace Doctrim.API.Controllers
         // Post: localhost:XXXXX/api/documents
         // Makes a post to the API containing the the document file and its metadata
         [HttpPost]
-        public async Task<IActionResult> UploadDocument([FromBody] DocumentPostDTO postDTO)
+        public async Task<IActionResult> UploadDocument([FromBody] CreateTemplateCommand postDTO)
         {
             try
             {
                 DocumentFile documentFile = _mapper.Map<DocumentFile>(postDTO.DocumentFile);
-                documentFile = await _apiService.DocumentUpload(documentFile, postDTO.FileByteArray);
+                documentFile = _apiService.DocumentUpload(documentFile, postDTO.FileByteArray);
 
                 if (documentFile.DocumentPath != null)
                 {

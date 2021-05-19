@@ -6,14 +6,18 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using DocumentFormat.OpenXml.Wordprocessing;
+using Adobe.DocumentServices.PDFTools.auth;
+using Adobe.DocumentServices.PDFTools;
+using Adobe.DocumentServices.PDFTools.pdfops;
+using Adobe.DocumentServices.PDFTools.io;
 
 namespace Services
 {
     public class DoctrimAPIService : IDoctrimAPIService
     {
-        private readonly IHostingEnvironment _env;
+        private readonly IHostEnvironment _env;
 
-        public DoctrimAPIService(IHostingEnvironment env)
+        public DoctrimAPIService(IHostEnvironment env)
         {
             _env = env;
         }
@@ -24,7 +28,7 @@ namespace Services
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        public async Task<DocumentFile> DocumentUpload(DocumentFile documentFile, byte[] fileByteArray)
+        public DocumentFile DocumentUpload(DocumentFile documentFile, byte[] fileByteArray)
         {
             
             var path = $"{_env.ContentRootPath}\\UploadedDocuments\\{documentFile.DocumentName}{DateTime.Now.ToString("yyMMddhhmmssffff")}{documentFile.FileExtension}";
@@ -43,7 +47,7 @@ namespace Services
         /// <param name="selectedTemplate"></param>
         /// <returns></returns>
         //Todo: Add data-source as indata aswell.
-      public async Task<string> FillTemplate(DocumentTemplate selectedTemplate)
+      public string FillTemplate(DocumentTemplate selectedTemplate)
         {
             string sourceFile = selectedTemplate.FilePath ;
             string destinationFile = $@"C:\Users\Gustav\source\repos\Doctrim\Doctrim.API\FilledTemplates\DatasourceName_{selectedTemplate.TemplateName}_{DateTime.Now.ToString("yyMMddhhmmssffff")}.docx";
@@ -81,16 +85,37 @@ namespace Services
                         }
                     }
                 }
-                return destinationFile;
+               
+                Credentials credentials = Credentials.ServiceAccountCredentialsBuilder()
+                .FromFile("Insert path to pdf-apitools-credentials.json inside of CreatePdfFromDocx") //TODO: Fill in credential path here
+                .Build();
+
+                //Create an ExecutionContext using credentials and create a new operation instance.
+                ExecutionContext executionContext = ExecutionContext.Create(credentials);
+                CreatePDFOperation createPdfOperation = CreatePDFOperation.CreateNew();
+
+                // Set operation input from a source file.
+                FileRef source = FileRef.CreateFromLocalFile(destinationFile);
+                createPdfOperation.SetInput(source);
+
+                // Execute the operation.
+                FileRef result = createPdfOperation.Execute(executionContext);
+
+                string savedPdf = $"{_env.ContentRootPath}\\FilledTemplates\\{Path.GetFileNameWithoutExtension(destinationFile)}.pdf";
+                // Save the result to the specified location.
+                result.SaveAs(savedPdf);
+                
+
+                return savedPdf;
             }
 
-            catch (Exception ex)
+            catch
             {
                 return null;
             }
         }
 
-      public async Task<DocumentTemplate> UploadTemplate(DocumentTemplate template, byte[] fileByteArray)
+      public DocumentTemplate UploadTemplate(DocumentTemplate template, byte[] fileByteArray)
         {
             var path = $"{_env.ContentRootPath}\\DocumentTemplates\\{template.TemplateName}{DateTime.Now.ToString("yyMMddhhmmssffff")}.docx";
             var fileStream = System.IO.File.Create(path);

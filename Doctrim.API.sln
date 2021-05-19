@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Doctrim.API", "Doctrim.API\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{2EA945BD-6576-4EA6-B8F5-7A18F1ED2929}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Doctrim.DTOs", "Doctrim.DTOs\Doctrim.DTOs.csproj", "{CC2D75CB-B1EA-47FA-9993-4FBCACFCCD5E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Doctrim.Dto", "Doctrim.DTOs\Doctrim.Dto.csproj", "{CC2D75CB-B1EA-47FA-9993-4FBCACFCCD5E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
